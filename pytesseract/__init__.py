@@ -22,3 +22,10 @@ from .pytesseract import TSVNotSupported
 
 
 __version__ = '0.3.10'
+
+# Denote this Python 2 compatible version as a pre-release, so pip's
+# version comparison will interpret this package as a lower version
+# than the Python-3-only version it sees on PyPI.  That way, pip on
+# Python 2 will install this version, and pip for Python 3 will use
+# the PyPI package.
+__version__ += '.pre1'
