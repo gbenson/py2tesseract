@@ -87,7 +87,7 @@ class Output:
 
 class PandasNotSupported(EnvironmentError):
     def __init__(self):
-        super().__init__('Missing pandas package')
+        super(EnvironmentError, self).__init__('Missing pandas package')
 
 
 class TesseractError(RuntimeError):
@@ -99,7 +99,7 @@ class TesseractError(RuntimeError):
 
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
-        super().__init__(
+        super(EnvironmentError, self).__init__(
             "{} is not installed or it's not in your PATH."
             ' See README file for more information.'.format(tesseract_cmd)
         )
@@ -107,14 +107,14 @@ class TesseractNotFoundError(EnvironmentError):
 
 class TSVNotSupported(EnvironmentError):
     def __init__(self):
-        super().__init__(
+        super(EnvironmentError, self).__init__(
             'TSV output not supported. Tesseract >= 3.05 required',
         )
 
 
 class ALTONotSupported(EnvironmentError):
     def __init__(self):
-        super().__init__(
+        super(EnvironmentError, self).__init__(
             'ALTO output not supported. Tesseract >= 4.1.0 required',
         )
 

@@ -28,4 +28,4 @@ __version__ = '0.3.10'
 # than the Python-3-only version it sees on PyPI.  That way, pip on
 # Python 2 will install this version, and pip for Python 3 will use
 # the PyPI package.
-__version__ += '.pre2'
+__version__ += '.pre3'
