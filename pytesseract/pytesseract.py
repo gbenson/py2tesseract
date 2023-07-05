@@ -404,8 +404,8 @@ def get_tesseract_version():
         raise TesseractNotFoundError()
 
     raw_version = output.decode(DEFAULT_ENCODING)
-    str_version, *_ = raw_version.lstrip(string.printable[10:]).partition(' ')
-    str_version, *_ = str_version.partition('-')
+    str_version = raw_version.lstrip(string.printable[10:]).partition(' ')[0]
+    str_version = str_version.partition('-')[0]
 
     try:
         version = parse(str_version)
