@@ -6,3 +6,4 @@ virtualenv venv2
 pip config set global.no_python_version_warning True
 pip install packaging
 pip install -e .
+pip wheel --no-cache-dir --no-deps .
