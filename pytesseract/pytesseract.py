@@ -97,8 +97,8 @@ class TesseractError(RuntimeError):
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super().__init__(
-            f"{tesseract_cmd} is not installed or it's not in your PATH."
-            f' See README file for more information.',
+            "{} is not installed or it's not in your PATH."
+            ' See README file for more information.'.format(tesseract_cmd)
         )
 
 
@@ -167,7 +167,7 @@ def get_errors(error_string):
 
 def cleanup(temp_name):
     """Tries to remove temp files by filename wildcard path."""
-    for filename in iglob(f'{temp_name}*' if temp_name else temp_name):
+    for filename in iglob('{}*'.format(temp_name) if temp_name else temp_name):
         try:
             remove(filename)
         except OSError as e:
@@ -204,7 +204,7 @@ def save(image):
                 yield f.name, realpath(normpath(normcase(image)))
                 return
             image, extension = prepare(image)
-            input_file_name = f'{f.name}_input{extsep}{extension}'
+            input_file_name = '{}_input{}{}'.format(f.name, extsep, extension)
             image.save(input_file_name, format=image.format)
             yield f.name, input_file_name
     finally:
@@ -295,7 +295,7 @@ def run_and_get_output(
         }
 
         run_tesseract(**kwargs)
-        filename = f"{kwargs['output_filename_base']}{extsep}{extension}"
+        filename = "{}{}{}".format(kwargs['output_filename_base'], extsep, extension)
         with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
@@ -411,7 +411,7 @@ def get_tesseract_version():
         version = parse(str_version)
         assert version >= TESSERACT_MIN_VERSION
     except (AssertionError, InvalidVersion):
-        raise SystemExit(f'Invalid tesseract version: "{raw_version}"')
+        raise SystemExit('Invalid tesseract version: "{}"'.format(raw_version))
 
     return version
 
@@ -449,7 +449,7 @@ def image_to_pdf_or_hocr(
     """
 
     if extension not in {'pdf', 'hocr'}:
-        raise ValueError(f'Unsupported extension: {extension}')
+        raise ValueError('Unsupported extension: {}'.format(extension))
     args = [image, extension, lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
@@ -469,7 +469,7 @@ def image_to_alto_xml(
     if get_tesseract_version() < TESSERACT_ALTO_VERSION:
         raise ALTONotSupported()
 
-    config = f'-c tessedit_create_alto=1 {config.strip()}'
+    config = '-c tessedit_create_alto=1 {}'.format(config.strip())
     args = [image, 'xml', lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
@@ -486,13 +486,13 @@ def image_to_boxes(
     """
     Returns string containing recognized characters and their box boundaries
     """
-    config = f'{config.strip()} batch.nochop makebox'
+    config = '{} batch.nochop makebox'.format(config.strip())
     args = [image, 'box', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
         Output.DICT: lambda: file_to_dict(
-            f'char left bottom right top page\n{run_and_get_output(*args)}',
+            'char left bottom right top page\n{}'.format(run_and_get_output(*args)),
             ' ',
             0,
         ),
@@ -530,7 +530,7 @@ def image_to_data(
     if get_tesseract_version() < TESSERACT_MIN_VERSION:
         raise TSVNotSupported()
 
-    config = f'-c tessedit_create_tsv=1 {config.strip()}'
+    config = '-c tessedit_create_tsv=1 {}'.format(config.strip())
     args = [image, 'tsv', lang, config, nice, timeout]
 
     return {
@@ -555,7 +555,7 @@ def image_to_osd(
     """
     Returns string containing the orientation and script detection (OSD)
     """
-    config = f'--psm 0 {config.strip()}'
+    config = '--psm 0 {}'.format(config.strip())
     args = [image, 'osd', lang, config, nice, timeout]
 
     return {
@@ -578,10 +578,10 @@ def main():
         with Image.open(filename) as img:
             print(image_to_string(img, lang=lang))
     except TesseractNotFoundError as e:
-        print(f'{str(e)}\n', file=sys.stderr)
+        print('{}\n'.format(str(e)), file=sys.stderr)
         return 1
     except OSError as e:
-        print(f'{type(e).__name__}: {e}', file=sys.stderr)
+        print('{}: {}'.format(type(e).__name__, e), file=sys.stderr)
         return 1
 
 
