@@ -199,11 +199,33 @@ def prepare(image):
     return image, extension
 
 
+def is_filename(image):
+    """Determine if `image` is a filename or not, in a Py2-compatible
+    way.  In Python 3, a string is a filename, and not a string is not.
+    For Python 2 we have to consider that the bytes of an image file
+    read into memory (e.g. `open("test.png").read()`) will be a string
+    so we look for non-printable/non-ASCII characters, which catches
+    PNG and JPG on the first byte.  I'm sure there are image formats
+    with only printable ASCII characters, but even XPM has linefeeds
+    so maybe not?  I'm only using PNG anyway, so I don't care! 😝
+    """
+    if sys.version_info.major >= 3:
+        return isinstance(image, str)
+    if isinstance(image, unicode):
+        return True
+    if not isinstance(image, str):
+        return False
+    for c in image:
+        if c < ' ' or c > '~':
+            return False
+    return True
+
+
 @contextmanager
 def save(image):
     try:
         with NamedTemporaryFile(prefix='tess_', delete=False) as f:
-            if isinstance(image, str):
+            if is_filename(image):
                 yield f.name, realpath(normpath(normcase(image)))
                 return
             image, extension = prepare(image)
