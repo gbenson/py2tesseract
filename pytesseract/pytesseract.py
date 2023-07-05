@@ -31,10 +31,13 @@ from time import sleep
 from packaging.version import InvalidVersion
 from packaging.version import parse
 from packaging.version import Version
-from PIL import Image
 
 
 tesseract_cmd = 'tesseract'
+
+pillow_installed = find_loader('PIL') is not None
+if pillow_installed:
+    from PIL import Image
 
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
