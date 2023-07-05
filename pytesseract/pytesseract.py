@@ -401,7 +401,7 @@ def get_tesseract_version():
             [tesseract_cmd, '--version'],
             stderr=subprocess.STDOUT,
             env=environ,
-            stdin=subprocess.DEVNULL,
+            stdin=getattr(subprocess, "DEVNULL", None),
         )
     except OSError:
         raise TesseractNotFoundError()
